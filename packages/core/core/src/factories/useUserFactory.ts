@@ -27,8 +27,13 @@ export const useUserFactory = <USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS ex
       Logger.debug('useUserFactory.setUser', newUser);
     };
 
+    const resetErrorValue = () => {
+      error.value = {};
+    };
+
     const updateUser = async ({ user: providedUser }) => {
       Logger.debug('useUserFactory.updateUser', providedUser);
+      resetErrorValue();
 
       try {
         loading.value = true;
@@ -44,6 +49,7 @@ export const useUserFactory = <USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS ex
 
     const register = async ({ user: providedUser }) => {
       Logger.debug('useUserFactory.register', providedUser);
+      resetErrorValue();
 
       try {
         loading.value = true;
@@ -59,13 +65,14 @@ export const useUserFactory = <USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS ex
 
     const login = async ({ user: providedUser }) => {
       Logger.debug('useUserFactory.login', providedUser);
+      resetErrorValue();
 
       try {
         loading.value = true;
         error.value.login = null;
         user.value = await _factoryParams.logIn(providedUser);
       } catch (err) {
-        error.value.login = err;
+        error.value.login = err.response?.data || err;
         Logger.error('useUser/login', err);
       } finally {
         loading.value = false;
@@ -74,6 +81,7 @@ export const useUserFactory = <USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS ex
 
     const logout = async () => {
       Logger.debug('useUserFactory.logout');
+      resetErrorValue();
 
       try {
         error.value.logout = null;
@@ -87,6 +95,7 @@ export const useUserFactory = <USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS ex
 
     const changePassword = async (params) => {
       Logger.debug('useUserFactory.changePassword', { currentPassword: mask(params.current), newPassword: mask(params.new) });
+      resetErrorValue();
 
       try {
         loading.value = true;
@@ -106,6 +115,7 @@ export const useUserFactory = <USER, UPDATE_USER_PARAMS, REGISTER_USER_PARAMS ex
 
     const load = async () => {
       Logger.debug('useUserFactory.load');
+      resetErrorValue();
 
       try {
         loading.value = true;
