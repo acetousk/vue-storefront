@@ -67,7 +67,7 @@
         </div>
         <div class="bottom">
           <p class="bottom__paragraph">{{ $t('No account') }}</p>
-          <SfButton data-cy="login-btn_sign-up" class="sf-button--text" @click="isLogin = false">
+          <SfButton data-cy="login-btn_sign-up" class="sf-button--text" @click="setIsLoginValue(false)">
             {{ $t('Register today') }}
           </SfButton>
         </div>
@@ -147,7 +147,7 @@
         </ValidationObserver>
         <div class="action">
           {{ $t('or') }}
-          <SfButton data-cy="login-btn_login-into-account" class="sf-button--text" @click="isLogin = true">
+          <SfButton data-cy="login-btn_login-into-account" class="sf-button--text" @click="setIsLoginValue(true)">
             {{ $t('login in to your account') }}
           </SfButton>
         </div>
@@ -205,7 +205,18 @@ export default {
       register: null
     });
 
+    const resetErrorValues = () => {
+      error.login = null;
+      error.register = null;
+    };
+
+    const setIsLoginValue = (value) => {
+      resetErrorValues();
+      isLogin.value = value;
+    };
+
     const handleForm = (fn) => async () => {
+      resetErrorValues();
       await fn({ user: form.value });
 
       const hasUserErrors = userError.value.register || userError.value.login;
@@ -214,8 +225,6 @@ export default {
         error.register = userError.value.register;
         return;
       }
-      error.login = null;
-      error.register = null;
       toggleLoginModal();
     };
 
@@ -234,7 +243,8 @@ export default {
       isLoginModalOpen,
       toggleLoginModal,
       handleLogin,
-      handleRegister
+      handleRegister,
+      setIsLoginValue
     };
   }
 };
